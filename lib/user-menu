@@ -5,8 +5,9 @@ user_menu_actions() {
 	while true; do
 		read -p "Please choose : " uchoice
 		case "$uchoice" in
-			#1) user_create ;;
-			#2) user_info_get ;;
+			1) user_create ;;
+			2) user_info_get ;;
+			3) user_delete ;;
 			#3) password_policy_enforce ;;
 			q) exit 0 ;;
 		esac
@@ -14,7 +15,7 @@ user_menu_actions() {
 }
 
 print_user(){
-	local userMenuOptions=(createUser getUserInfo passwordPolicy Exit\(q\))
+	local userMenuOptions=(createUser getUserInfo deleteUser passwordPolicy Exit\(q\))
 	local i=1
 	for item in "${userMenuOptions[@]}"; do
 		echo "${i}: ${item}"
@@ -23,5 +24,43 @@ print_user(){
 	printf '\n'
 }
 
+user_create(){
+	local userName
+	local userPass
+	local confPass
 
+	read -p "Please enter a username: " userName
+	read -s -p "Please enter a password: " userPass
+	printf '\n'
+	read -s -p "Please confirm the password: " confPass
+	
+	if [[ $userPass == $confPass ]]; then
+		echo "Provided passwords match! Creating user $userName"
+		useradd -s /bin/bash -m $userName && echo "$userName:$userPass" | chpasswd && echo "Created User $userName with a home dir and /bin/bash as a Shell!"
+		exit 0
+	fi
+}
 
+user_info_get() {
+	local activeUsers="$(cat /etc/passwd | grep /bin/bash | cut -d : -f 1)"
+	for user in $activeUsers; do
+		if [[ $user == "root" ]]; then
+			continue
+		fi
+		printf '\n'
+		printf 'Username: %s\n' "$user"
+		printf 'UID: %s\n' "$(cat /etc/passwd | grep $user | cut -d : -f 3)"
+		printf 'GID: %s\n' "$(cat /etc/passwd | grep $user | cut -d : -f 4)"
+		printf 'Shell: %s\n' "$(cat /etc/passwd | grep $user | rev | cut -d : -f 1 | rev)"
+		printf '\n'
+	done
+}
+
+user_delete(){
+	local userToDelete
+	read -p "Please enter a username to delete: " userToDelete
+	if [[ $userToDelete == "$(whoami)" ]]; then
+		echo "Cannot delete yoursef..."
+		printf '\n'
+	fi
+}
