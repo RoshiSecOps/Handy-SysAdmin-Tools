@@ -62,5 +62,12 @@ user_delete(){
 	if [[ $userToDelete == "$(whoami)" ]]; then
 		echo "Cannot delete yoursef..."
 		printf '\n'
+		exit 0
+	elif [[ $userToDelete == "root" ]]; then
+		echo "Cannot delete root..."
+		printf '\n'
+		exit 0
+	else
+		userdel -r $userToDelete
 	fi
 }
