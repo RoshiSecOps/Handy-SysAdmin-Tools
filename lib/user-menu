@@ -1,16 +1,27 @@
 #!/usr/bin/env bash
 
 user_menu_actions() {
-	user_menu_options
-
+	print_user
+	while true; do
+		read -p "Please choose : " uchoice
+		case "$uchoice" in
+			#1) user_create ;;
+			#2) user_info_get ;;
+			#3) password_policy_enforce ;;
+			q) exit 0 ;;
+		esac
+	done
 }
 
-user_menu_options(){
-	local userMenuOptions=(createUser getUserInfo passwordPolicy)
+print_user(){
+	local userMenuOptions=(createUser getUserInfo passwordPolicy Exit\(q\))
 	local i=1
 	for item in "${userMenuOptions[@]}"; do
 		echo "${i}: ${item}"
 		(( i++ ))
 	done
+	printf '\n'
 }
+
+
 

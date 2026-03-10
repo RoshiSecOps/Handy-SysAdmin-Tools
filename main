@@ -10,14 +10,16 @@ print_main() {
 		echo "${i} : ${item}"
 		((i ++))
 	done
+	printf '\n'
 }
 
 main_menu() {
 	print_main
 	while true; do
 		read -p "Please choose: " choice
+		printf '\n'
 		case "$choice" in
-			1) user_menu_options ;;
+			1) user_menu_actions ;;
 			2) monitoring_menu ;;
 			3) server_setup_menu ;;
 			4) security_menu ;;
