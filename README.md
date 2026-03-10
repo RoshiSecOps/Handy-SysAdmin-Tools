@@ -1,2 +1,2 @@
-# Handy-SysAdmin-Tools
-A all-in-one bash script for daily admin tasks
+# Handy-Admin-Toolbox
+A bash script designed to give admins a one-stop-interface for system help and common tasks.

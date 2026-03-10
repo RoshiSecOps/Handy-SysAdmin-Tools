@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+source ./lib/user-menu
+
+print_main() {
+	local menu=(UserConfig Monitoring ServerSetup Security)
+	local i=1
+	for  item in "${menu[@]}"; do
+		echo "${i} : ${item}"
+		((i ++))
+	done
+}
+
+main_menu() {
+	print_main
+	while true; do
+		read -p "Please choose: " choice
+		case "$choice" in
+			1) user_menu_options ;;
+			2) monitoring_menu ;;
+			3) server_setup_menu ;;
+			4) security_menu ;;
+			q) exit 0 ;;
+		esac
+	done
+}
+
+main_menu

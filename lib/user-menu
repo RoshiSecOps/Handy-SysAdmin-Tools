@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+user_menu_actions() {
+	user_menu_options
+
+}
+
+user_menu_options(){
+	local userMenuOptions=(createUser getUserInfo passwordPolicy)
+	local i=1
+	for item in "${userMenuOptions[@]}"; do
+		echo "${i}: ${item}"
+		(( i++ ))
+	done
+}
+
