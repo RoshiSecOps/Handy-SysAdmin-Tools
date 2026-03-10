@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+
+monitoring_menu(){
+	print_system
+	while true; do
+		read -p "Please choose: " schoice
+		printf '\n'
+		case "$schoice" in
+			1) system_info_get ;;
+			#2) top_processes_by_user_get ;;
+			#3) end_top_process_choice ;;
+			q) exit 0 ;;
+		esac
+	done
+}
+
+print_system(){
+	local sysMenuOptions=(getSystemHealth getTopProcessesByUser endTopProcess Exit\(q\))
+	local i=1
+	for item in "${sysMenuOptions[@]}"; do
+		if [[ $item == "Exit" ]]; then
+			echo "q: Exit"
+		else
+			echo "${i}: ${item}"
+			(( i++ ))
+		fi
+	done
+	printf '\n'
+}
+
+system_info_get(){
+	local uptime_metric="$(uptime | cut -d , -f 1)"
+	local load_metric="$(uptime | cut -d , -f 3-)"
+	echo "Checking uptime..."
+	echo "--------------------------"
+	
+
+	echo "--------------------------"
+
+	echo "--------------------------"
+	
+	echo "--------------------------"
+}
