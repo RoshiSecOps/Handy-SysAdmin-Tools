@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+start_menu() {
+	local current_user="$(whoami)"
+	local current_shell="$(echo $SHELL)"
+	local current_host="$(hostname)"
+	local current_date="$(date)"
+
+	printf 'Current User: %s\n' "$current_user"
+	printf 'Shell: %s\n' "$current_shell"
+	printf 'Host: %s\n' "$current_host"
+	printf 'DATE: %s\n' "$current_date"
+	printf '\n'
+
+}
+

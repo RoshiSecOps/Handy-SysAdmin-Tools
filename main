@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 source ./lib/user-menu
+source ./lib/script-init-output
 
 print_main() {
-	local menu=(UserConfig Monitoring ServerSetup Security)
+	local menu=(UserConfig Monitoring ServerSetup Security Exit\(q\))
 	local i=1
 	for  item in "${menu[@]}"; do
 		echo "${i} : ${item}"
@@ -25,4 +26,5 @@ main_menu() {
 	done
 }
 
+start_menu
 main_menu
