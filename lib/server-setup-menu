@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+source ../main
+
+apps_to_install=('git' 'wget' 'htop' 'tcpdump' 'zip' 'tar' 'firewalld' 'tree' 'jq' 'sysstat' 'dnsutils')
+declare -A dict_apps_to_install
+
+print_server_setup() {
+	local menu=(listAppsForInstall checkInstalled bulkInstallList installFromFile 'Exit(q)')
+	local i=1
+	for  item in "${menu[@]}"; do
+		echo "${i} : ${item}"
+		((i ++))
+	done
+	printf '\n'
+}
+
+server_setup_menu() {
+	print_server_setup
+	while true; do
+		read -p "Please choose: " choice
+		printf '\n'
+		case "$choice" in
+			1) list_apps_for_install ;;
+			#2) ;;
+			3) bulk_install ;;
+			#4) ;;
+			q) main_menu ;;
+		esac
+	done
+}
+
+list_apps_for_install(){
+	for app in "${apps_to_install[@]}"; do
+		echo "$app"
+	done
+}
+
+bulk_install(){
+	echo "Updating packages before installing apps..."
+	sleep 1
+	apt-get update -y
+	sleep 1
+	echo "Installing from the default list of apps..."
+	for app_to_install in "${apps_to_install[@]}"; do
+		apt-get install -y "$app_to_install"
+		if [ $? -eq 0 ]; then
+			echo "$app_to_install installed."
+			dict_apps_to_install["$app_to_install"]="Installed"
+		else
+			echo "$app_to_install failed to install..."
+			dict_apps_to_install["$app_to_install"]="Not Installed"
+		fi
+	done
+}

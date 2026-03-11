@@ -86,10 +86,6 @@ user_add_group(){
         	possibleGroups+=("$groupName")
     	done < /etc/group	
 
-	for item in "${possibleGroups[@]}"; do
-		echo "$item"
-	done
-
 	local groupPresent
 	groupPresent=0
 
@@ -136,6 +132,6 @@ user_add_group(){
 	done
 
 	echo "Adding $userName to $groupToAdd"
-	adduser $userName $groupToAdd && echo "User successfully added!"
+	adduser $userName $groupToAdd && echo "User successfully added!" || echo "Error! Could not add User to $groupToAdd successfully..." && exit 1
 	)
 }
