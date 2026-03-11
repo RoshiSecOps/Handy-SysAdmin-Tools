@@ -10,6 +10,7 @@ user_menu_actions() {
 			1) user_create ;;
 			2) user_info_get ;;
 			3) user_delete ;;
+			4) user_add_group ;;
 			#3) password_policy_enforce ;;
 			q) main_menu ;;
 		esac
@@ -17,7 +18,7 @@ user_menu_actions() {
 }
 
 print_user(){
-	local userMenuOptions=(createUser getUserInfo deleteUser passwordPolicy 'Main menu (q)')
+	local userMenuOptions=(createUser getUserInfo deleteUser addUserToGroup addMultipleUsersToGroup removeUserFromGroup passwordPolicy 'Main menu (q)')
 	local i=1
 	for item in "${userMenuOptions[@]}"; do
 		echo "${i}: ${item}"
@@ -72,4 +73,65 @@ user_delete(){
 	else
 		userdel -r $userToDelete
 	fi
+}
+
+user_add_group(){
+	
+	local userName
+	local groupToAdd
+	local groupMembers
+	local -a possibleGroups=()
+	
+	while IFS=: read -r groupName _; do
+        	possibleGroups+=("$groupName")
+    	done < /etc/group	
+
+	for item in "${possibleGroups[@]}"; do
+		echo "$item"
+	done
+
+	local groupPresent
+	groupPresent=0
+
+	read -p "Please provide a username: " userName
+	read -p "Please provide a group to add "$userName" to: " groupToAdd
+	
+	for group in "${possibleGroups[@]}"; do
+		if [[ "$group" == "$groupToAdd" ]]; then
+			((groupPresent++))
+			echo "Group is present on system."
+			printf '\n'
+			break
+		fi
+		done
+	
+	if (( "$groupPresent" == 0 )); then
+		echo "Group is not present..."
+		echo "Going back to user menu."
+		sleep 1
+		user_menu_actions
+	fi
+
+	groupMembers="$(cat /etc/group | grep -w "$groupToAdd" | rev | cut -d : -f 1 | rev)"
+	
+	(
+	IFS=',' read -r -a arr <<< "$groupMembers"
+	
+	for member in "${arr[@]}"; do
+		if [[ "$member" == "$userName" ]]; then
+			echo "$userName is already a member"
+			echo "Going back to user menu"
+			user_menu_actions
+		fi
+	done
+
+	echo "Getting $groupToAdd members..."
+	sleep 1
+	printf '\n'
+
+	for member in "${arr[@]}"; do
+		echo "$member"
+		printf '\n'
+	done
+	)
 }

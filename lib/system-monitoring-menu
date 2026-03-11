@@ -19,7 +19,7 @@ monitoring_menu(){
 
 print_system(){
 
-	local sysMenuOptions=(getSystemHealth getTopProcesses endTopProcess 'Main menu(q)')
+	local sysMenuOptions=(getSystemHealth getTopProcesses endTopProcess 'Main menu (q)')
 	local i=1	
 
 	for item in "${sysMenuOptions[@]}"; do
