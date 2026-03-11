@@ -109,6 +109,7 @@ user_add_group(){
 		echo "Group is not present..."
 		echo "Going back to user menu."
 		sleep 1
+		printf '\n'
 		user_menu_actions
 	fi
 
