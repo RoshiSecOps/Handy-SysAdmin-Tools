@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+source ../main
 
 monitoring_menu(){
 	print_system
@@ -10,13 +11,13 @@ monitoring_menu(){
 			1) system_info_get ;;
 			#2) top_processes_by_user_get ;;
 			#3) end_top_process_choice ;;
-			q) exit 0 ;;
+			q) main_menu ;;
 		esac
 	done
 }
 
 print_system(){
-	local sysMenuOptions=(getSystemHealth getTopProcessesByUser endTopProcess Exit\(q\))
+	local sysMenuOptions=(getSystemHealth getTopProcessesByUser endTopProcess 'Main menu(q)')
 	local i=1
 	for item in "${sysMenuOptions[@]}"; do
 		if [[ $item == "Exit" ]]; then
@@ -30,15 +31,42 @@ print_system(){
 }
 
 system_info_get(){
+	
 	local uptime_metric="$(uptime | cut -d , -f 1)"
 	local load_metric="$(uptime | cut -d , -f 3-)"
+	local os_kernel_info="$(cat /proc/version)"
+	local cpu_metric="$(cat /proc/cpuinfo)"
+	local mem_metric="$(cat /proc/meminfo)"
+
+
 	echo "Checking uptime..."
+	sleep 1
+	printf '%s\n' "$uptime_metric"
+	
 	echo "--------------------------"
 	
+	echo "Checking Average load..."	
+	sleep 1
+	printf '%s\n' "$load_metric"
 
 	echo "--------------------------"
 
+	echo "Printing OS, Kernel, gcc info..."
+	sleep 1
+	printf '%s\n' "$os_kernel_info"
+
 	echo "--------------------------"
-	
+	echo "Printing CPU info..."
+	sleep 1
+	printf '%s\n' "$cpu_metric"
+
 	echo "--------------------------"
+	echo "Printing Memory info..."
+	sleep 1
+	printf '%s\n' "$mem_metric"
+
+	echo "--------------------------"
+	echo "Going back to monitoring menu..."
+	sleep 1
+	monitoring_menu
 }

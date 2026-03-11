@@ -2,6 +2,7 @@
 
 source ./lib/user-menu
 source ./lib/script-init-output
+source ./lib/system-monitoring-menu
 
 print_main() {
 	local menu=(UserConfig Monitoring ServerSetup Security Exit\(q\))
