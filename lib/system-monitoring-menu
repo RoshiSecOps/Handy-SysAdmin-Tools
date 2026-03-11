@@ -3,13 +3,14 @@
 source ../main
 
 monitoring_menu(){
+	
 	print_system
 	while true; do
 		read -p "Please choose: " schoice
 		printf '\n'
 		case "$schoice" in
 			1) system_info_get ;;
-			#2) top_processes_by_user_get ;;
+			2) process_load_get ;;
 			#3) end_top_process_choice ;;
 			q) main_menu ;;
 		esac
@@ -17,8 +18,10 @@ monitoring_menu(){
 }
 
 print_system(){
-	local sysMenuOptions=(getSystemHealth getTopProcessesByUser endTopProcess 'Main menu(q)')
-	local i=1
+
+	local sysMenuOptions=(getSystemHealth getTopProcesses endTopProcess 'Main menu(q)')
+	local i=1	
+
 	for item in "${sysMenuOptions[@]}"; do
 		if [[ $item == "Exit" ]]; then
 			echo "q: Exit"
@@ -67,6 +70,27 @@ system_info_get(){
 
 	echo "--------------------------"
 	echo "Going back to monitoring menu..."
+	printf '\n'
 	sleep 1
 	monitoring_menu
+}
+
+process_load_get() {
+	
+	local psaux_cpu="$(ps aux --sort=-%cpu | head -n 6)"
+	local psaux_mem="$(ps aux --sort=-%mem | head -n 6)"
+
+	echo "Getting top 5 CPU-intensive processes..."
+	sleep 1
+	printf '%s\n\n' "$psaux_cpu"
+	
+	echo "Getting top 5 Memory-intensive processes..."
+	sleep 1
+	printf '%s\n\n' "$psaux_mem"
+	
+	echo "Going back to monitoring menu..."
+	printf '\n'
+	sleep 1
+	monitoring_menu
+
 }
