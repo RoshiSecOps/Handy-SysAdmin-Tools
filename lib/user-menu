@@ -134,5 +134,8 @@ user_add_group(){
 		echo "$member"
 		printf '\n'
 	done
+
+	echo "Adding $userName to $groupToAdd"
+	adduser $userName $groupToAdd && echo "User successfully added!"
 	)
 }
