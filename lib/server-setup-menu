@@ -76,12 +76,41 @@ bulk_install(){
 
 install_from_file(){
 	echo "CAUTION: Install file must be in the following format:"
-	echo "app_name,app_name,app_name"
-	echo "Note, it's just the package names separeted by a comma with no whitespace..."
+	printf 'appname\n appname\n'
+	echo "Note, it's just the package names each on a new line..."
 
 	local file_path
-	read -p "Please provide absolute file path: " file_path
-		
-	echo "Checking provided file path (${file_path})"
+	local app_count
+	local answer
 	
+	app_count=0
+	read -p "Please provide filepath: " filepath
+	echo "Apps to be installed"
+	echo "--------------------------------------"
+	while read -r line; do
+		(( app_count++ ))
+		echo $line
+	done < "${filepath}"
+	
+	sleep 1
+	printf '\n'
+	read -p "Please confirm you want to install these ${app_count} packages (y/n)" answer
+	if [[ "${answer}" == "n" ]]; then
+		echo "Exiting back to server menu..."
+		print_server_setup
+	else
+		echo "Installing apps..."
+		while read -r line; do
+			echo "installing ${line}"
+			apt-get install ${line} -y 			 
+			if [ $? -eq 0 ] ; then
+				echo "Successfully installed ${line}"
+			else 
+				echo "Could not install ${line}"
+			fi
+			echo "-------------------------------"
+			sleep 1
+		done < "${filepath}"
+	fi
+	print_server_setup
 }
