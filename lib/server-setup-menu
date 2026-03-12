@@ -6,7 +6,8 @@ apps_to_install=('git' 'wget' 'htop' 'tcpdump' 'zip' 'tar' 'firewalld' 'tree' 'j
 declare -A dict_apps_to_install
 
 print_server_setup() {
-	local menu=(listAppsForInstall checkInstalled bulkInstallList installFromFile 'Exit(q)')
+	printf '\n'
+	local menu=(listAppsForInstall bulkInstallList installFromFile 'Exit(q)')
 	local i=1
 	for  item in "${menu[@]}"; do
 		echo "${i} : ${item}"
@@ -22,9 +23,8 @@ server_setup_menu() {
 		printf '\n'
 		case "$choice" in
 			1) list_apps_for_install ;;
-			#2) ;;
-			3) bulk_install ;;
-			#4) ;;
+			2) bulk_install ;;
+			3) install_from_file ;;
 			q) main_menu ;;
 		esac
 	done
@@ -34,22 +34,54 @@ list_apps_for_install(){
 	for app in "${apps_to_install[@]}"; do
 		echo "$app"
 	done
+	print_server_setup
 }
 
 bulk_install(){
 	echo "Updating packages before installing apps..."
+	echo "-----------------------------------------------"
 	sleep 1
 	apt-get update -y
 	sleep 1
 	echo "Installing from the default list of apps..."
+
 	for app_to_install in "${apps_to_install[@]}"; do
 		apt-get install -y "$app_to_install"
 		if [ $? -eq 0 ]; then
 			echo "$app_to_install installed."
-			dict_apps_to_install["$app_to_install"]="Installed"
+			dict_apps_to_install["${app_to_install}"]="Installed"
 		else
 			echo "$app_to_install failed to install..."
-			dict_apps_to_install["$app_to_install"]="Not Installed"
+			dict_apps_to_install["${app_to_install}"]="Not Installed"
 		fi
 	done
+
+	echo "Successfully installed the following apps:"
+
+	for check_app in "${!dict_apps_to_install[@]}"; do
+		if [[ ${dict_apps_to_install["${check_app}"]} == "Installed" ]]; then
+			echo "${check_app}"
+		fi
+	done
+
+	echo "-----------------------------------------------"
+	echo "Could not install the following apps:"
+	for check_app in "${!dict_apps_to_install[@]}"; do
+		if [[ ${dict_apps_to_install["${check_app}"]} == "Not Installed" ]]; then
+			echo "${check_app}"
+		fi
+	done
+	print_server_setup
+}
+
+install_from_file(){
+	echo "CAUTION: Install file must be in the following format:"
+	echo "app_name,app_name,app_name"
+	echo "Note, it's just the package names separeted by a comma with no whitespace..."
+
+	local file_path
+	read -p "Please provide absolute file path: " file_path
+		
+	echo "Checking provided file path (${file_path})"
+	
 }
