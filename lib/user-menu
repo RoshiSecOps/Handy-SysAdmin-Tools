@@ -12,7 +12,7 @@ user_menu_actions() {
 			3) user_delete ;;
 			4) user_add_group ;;
 			5) multiple_user_create ;;
-			#3) multiple_user_add_group ;;
+			#6) multiple_user_add_group ;;
 			q) main_menu ;;
 		esac
 	done

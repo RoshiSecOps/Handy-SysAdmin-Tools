@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+source ../main
+
+check_ssh_config(){
+	printf '\n'
+	if cat /etc/ssh/sshd_config&>/dev/null; then
+		local sshConfFile="/etc/ssh/sshd_config"
+		echo "SSH config file found, checking settings..."
+		echo "------------------------"
+		sleep 1
+		printf '\n'
+		
+		echo "Checking root login..."
+		sleep 1
+		cat ${sshConfFile} | grep PermitRootLogin
+		echo "Recommendation:"
+		echo "-Should be either set to \"no\" or \"prohibit-password\""	
+		echo "------------------------"
+		sleep 1
+		printf '\n'
+
+		echo "Checking password login..."
+		sleep 1
+		cat ${sshConfFile} | grep PasswordAuthentication
+		cat ${sshConfFile} | grep PermitEmptyPasswords
+		echo "Recommendation:"
+		echo "-PasswordAuthentication should be set to \"no\" and use key-based auth"
+		echo "-PermitEmptyPasswords should be set to \"no\" as well..."
+		echo "------------------------"
+		sleep 1
+		printf '\n'
+		
+	else
+		echo "No SSH config file present, exiting..."
+		return
+	fi
+
+}
+
+
+audit_start_print(){
+	printf 'Starting Security audit of system %s' "$(hostname)"
+	sleep 1
+	printf '.'
+	sleep 1
+	printf '.'
+	sleep 1
+	printf '.\n'
+
+	echo "We will be checking three key config files:"
+	echo "--/etc/ssh/sshd_config--"
+	sleep 1
+	echo "------------------------"
+	
+	echo "Global umask"
+	sleep 1
+	echo "------------------------"	
+
+	echo "Password Policy"
+	sleep 1
+	echo "------------------------"
+	
+	echo "--/etc/sudoers--"
+	sleep 1
+	echo "------------------------"
+}
+
+security_menu(){
+	audit_start_print
+	check_ssh_config
+}
+	
