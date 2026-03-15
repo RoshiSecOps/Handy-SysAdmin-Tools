@@ -15,7 +15,7 @@ check_ssh_config(){
 		sleep 1
 		cat ${sshConfFile} | grep PermitRootLogin
 		echo "Recommendation:"
-		echo "-Should be either set to \"no\" or \"prohibit-password\""	
+		echo "===>Should be either set to \"no\" or \"prohibit-password\""	
 		echo "------------------------"
 		sleep 1
 		printf '\n'
@@ -25,12 +25,34 @@ check_ssh_config(){
 		cat ${sshConfFile} | grep PasswordAuthentication
 		cat ${sshConfFile} | grep PermitEmptyPasswords
 		echo "Recommendation:"
-		echo "-PasswordAuthentication should be set to \"no\" and use key-based auth"
-		echo "-PermitEmptyPasswords should be set to \"no\" as well..."
+		echo "===>PasswordAuthentication should be set to \"no\" and use key-based auth"
+		echo "===>PermitEmptyPasswords should be set to \"no\" as well..."
 		echo "------------------------"
 		sleep 1
 		printf '\n'
 		
+		echo "Checking protocol..."
+		sleep 1
+		cat ${sshConfFile} | grep Protocol || echo "Protocol not found.."
+		echo "Recommendation:"
+		echo "===>Protocol option should be set to 2."
+		echo "Recommendation:"
+		echo "------------------------"
+                sleep 1
+                printf '\n'
+		echo "===>Make sure to thinker with AllowUsers/AllowGroups options based on your preferences."
+		sleep 1
+		echo "SSH Audit complete..."
+		printf 'Moving forward'
+		sleep 1
+		printf '.'
+
+		sleep 1
+		printf '.'
+
+		sleep 1
+		printf '.'
+		printf '\n'
 	else
 		echo "No SSH config file present, exiting..."
 		return
@@ -66,8 +88,84 @@ audit_start_print(){
 	echo "------------------------"
 }
 
+check_umask(){
+	echo "Current umask is: $(umask)"
+	echo "Recommendation:"
+	echo "===>Best practice is to set umask as 027" 
+	echo "------------------------"
+	sleep 1
+	printf '\n'
+}
+
+check_pass_policy(){
+	echo "Checking Password Policy..."
+	if cat /etc/login.defs | grep PASS_MAX_DAYS; then
+		echo "===>Good starting point is 90 days password age."
+	else
+		echo "!!! File not found !!!"
+		echo "Exiting..."
+		return
+	fi
+	
+	sleep 1
+	echo "Cheking pass min days before a user can reset."
+	cat /etc/login.defs | grep PASS_MIN_DAYS
+	echo "===>Best practice is 7 days, before a user can reset their password."
+	echo "Checking warning notice before password expires."
+	cat /etc/login.defs | grep PASS_WARN_AGE
+	echo "===>Best practice is use to be warned at least 7 days before password expiration."
+}
+
+check_sudoers(){
+	if cat /etc/sudoers&>/dev/null; then
+		echo "Sudoers file found..."
+		echo "starting analysis..."
+	else
+		echo "File not found"
+		echo "Moving forward..."
+		sleep 1
+		return
+	fi
+	
+	echo "Checking for nopasswd option set"
+	sleep 1
+	echo "----------------------------------"
+	if ! cat /etc/sudoers | grep NOPASSWD; then
+		echo "NOPASSWD Option not used, good"
+	else
+		echo "Do not use NOPASSWD Option, it is dangerous..."
+	fi
+	
+	if cat /etc/sudoers | grep "ALL=(ALL) ALL"; then
+		echo "Wildcard usage, limit as much as possible or disable altogether..."
+		sleep 1
+	else
+		echo "Wildcard usage not present, good"
+	fi
+	
+	if ! cat /etc/sudoers | grep "ALL=(ALL:ALL) NOPASSWD:ALL"; then
+		echo "No wildcard AND nopasswd option set at the same time, good."
+		sleep 1
+	else
+		echo "Dangerous option combination, disable ASAP!"
+	fi
+	
+	echo "Sudoers analysis done."
+	echo "Moving forward."
+	echo "----------------------------------"
+	sleep 1
+	
+}
+
 security_menu(){
 	audit_start_print
 	check_ssh_config
+	check_umask
+	check_pass_policy
+	check_sudoers
+	echo "----------------------------------"
+	echo "Security Audit finished, going back to main menu..."
+	sleep 1
+	printf '\n'
+	print_main
 }
-	
