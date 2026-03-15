@@ -12,6 +12,7 @@ user_menu_actions() {
 			3) user_delete ;;
 			4) user_add_group ;;
 			5) multiple_user_create ;;
+			6) multiple_user_delete ;;
 			#6) multiple_user_add_group ;;
 			q) main_menu ;;
 		esac
@@ -19,7 +20,7 @@ user_menu_actions() {
 }
 
 print_user(){
-	local userMenuOptions=(createUser getUserInfo deleteUser addUserToGroup addMultipleUsersToGroup removeUserFromGroup passwordPolicy 'Main menu (q)')
+	local userMenuOptions=(createUser getUserInfo deleteUser addUserToGroup createMultipleUsers deleteMultipleUsers 'addMultipleUsersToGroup(WIP)' 'Main menu (q)')
 	local i=1
 	for item in "${userMenuOptions[@]}"; do
 		echo "${i}: ${item}"
@@ -120,7 +121,15 @@ multiple_user_create(){
 	
 }
 
+multiple_user_delete(){
+	local filepath
+	echo "============================================================="
+	echo "File format is a simple list with each username on a new line!"
+	echo "============================================================="
+	read -p "Please provide the full path to the file with listed users."
 
+
+}
 
 user_info_get() {
 	local activeUsers="$(cat /etc/passwd | grep /bin/bash | cut -d : -f 1)"
