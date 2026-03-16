@@ -43,6 +43,7 @@ user_create(){
 		echo "Provided passwords match! Creating user $userName"
 		useradd -s /bin/bash -m $userName && echo "$userName:$userPass" | chpasswd && echo "Created User $userName with a home dir and /bin/bash as a Shell!"
 		passwd -e $userName
+		log LOW "User ${userName} was created."
 		exit 0
 	fi
 }
@@ -114,7 +115,8 @@ multiple_user_create(){
 		for user in "${usersToAdd[@]}"; do
 			echo "Creating user ${user}"
                 	useradd -s /bin/bash -m $user && echo "$user:$defaultPass" | chpasswd && echo "Created User $user with a home dir and /bin/bash as a Shell!"
-			passwd -e $user
+			passwd -e $useri
+			log LOW "User ${user} was created."
                 done
 
 	fi
@@ -138,6 +140,7 @@ multiple_user_delete(){
 			echo "Deleting ${line}..."
 			sleep 1
 			userdel -r $line 2>/dev/null || echo "Cannot delete user ${line}"
+			log HIGH "User ${line} was deleted."
 		fi
 	done < ${filepath}  
 
@@ -156,6 +159,7 @@ user_info_get() {
 		printf 'Shell: %s\n' "$(cat /etc/passwd | grep $user | rev | cut -d : -f 1 | rev)"
 		printf '\n'
 	done
+	log LOW "All System User info was fetched."
 }
 
 user_delete(){
@@ -171,6 +175,7 @@ user_delete(){
 		exit 0
 	else
 		userdel -r $userToDelete
+		log HIGH "User ${userToDelete} was deleted."
 	fi
 }
 
@@ -232,5 +237,6 @@ user_add_group(){
 
 	echo "Adding $userName to $groupToAdd"
 	adduser $userName $groupToAdd && echo "User successfully added!" || echo "Error! Could not add User to $groupToAdd successfully..." && exit 1
+	log MEDIUM "${userName} was added to group ${groupToAdd}."
 	)
 }

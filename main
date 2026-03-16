@@ -19,6 +19,7 @@ print_main() {
 
 main_menu() {
 	print_main
+	log INFO "Handy-SysAdmin-Tools started"
 	while true; do
 		read -p "Please choose: " choice
 		printf '\n'
