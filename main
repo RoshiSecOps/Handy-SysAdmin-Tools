@@ -5,6 +5,7 @@ source ./lib/script-init-output
 source ./lib/system-monitoring-menu
 source ./lib/server-setup-menu
 source ./lib/security-audit-menu
+source ./lib/script-logging-function
 
 print_main() {
 	local menu=(UserConfig Monitoring ServerSetup Security Exit\(q\))

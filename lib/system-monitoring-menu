@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source ../main
+source ./script-logging-function
 
 monitoring_menu(){
 	

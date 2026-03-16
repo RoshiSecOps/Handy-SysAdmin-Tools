@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source ../main
+source ./script-logging-function
 
 apps_to_install=('git' 'wget' 'htop' 'tcpdump' 'zip' 'tar' 'firewalld' 'tree' 'jq' 'sysstat' 'dnsutils')
 declare -A dict_apps_to_install
