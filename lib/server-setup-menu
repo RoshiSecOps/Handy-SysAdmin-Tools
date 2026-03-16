@@ -35,6 +35,7 @@ list_apps_for_install(){
 	for app in "${apps_to_install[@]}"; do
 		echo "$app"
 	done
+	log INFO "Apps for installation in Server setup menu were viewed."
 	print_server_setup
 }
 
@@ -49,9 +50,11 @@ bulk_install(){
 	for app_to_install in "${apps_to_install[@]}"; do
 		apt-get install -y "$app_to_install"
 		if [ $? -eq 0 ]; then
+			log LOW "${app_to_install} was installed."
 			echo "$app_to_install installed."
 			dict_apps_to_install["${app_to_install}"]="Installed"
 		else
+			log HIGH "${app_to_install} failed to install!"
 			echo "$app_to_install failed to install..."
 			dict_apps_to_install["${app_to_install}"]="Not Installed"
 		fi
@@ -106,8 +109,10 @@ install_from_file(){
 			apt-get install ${line} -y 			 
 			if [ $? -eq 0 ] ; then
 				echo "Successfully installed ${line}"
+				log INFO "${line} was installed."
 			else 
 				echo "Could not install ${line}"
+				log HIGH "${line} could not be installed!"
 			fi
 			echo "-------------------------------"
 			sleep 1

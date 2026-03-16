@@ -168,5 +168,6 @@ security_menu(){
 	echo "Security Audit finished, going back to main menu..."
 	sleep 1
 	printf '\n'
+	log INFO "Security Posture Report was generated"
 	print_main
 }
