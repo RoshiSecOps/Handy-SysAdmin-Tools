@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+log() {
+    local level="$1"; shift
+    local message="$*"
+
+    printf '%s [%s] %s\n' \
+        "$(date '+%F %T')" \
+        "$level" \
+        "$message" >> /var/log/admin_tool.log
+}
